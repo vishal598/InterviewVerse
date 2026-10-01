@@ -1,4 +1,5 @@
-const PISTON_API = "http://localhost:8080/api/v2";
+const PISTON_API = "/piston/api/v2";
+
 const LANGUAGE_VERSIONS = {
     javascript: {
         language: "javascript",
@@ -14,69 +15,82 @@ const LANGUAGE_VERSIONS = {
     }
 }
 
-export async function executeCode(language,code){
-    try{
-        const languageConfig=LANGUAGE_VERSIONS[language]
-        if(!languageConfig){
+export async function executeCode(language, code) {
+    try {
+        const languageConfig = LANGUAGE_VERSIONS[language]
+
+        if (!languageConfig) {
             return {
-                success:false,
-                error:`Unsupported Langues: ${language}`
+                success: false,
+                error: `Unsupported Language: ${language}`
             }
         }
-        const response= await fetch(`${PISTON_API}/execute`,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
+
+        const response = await fetch(`${PISTON_API}/execute`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
             },
-            body:JSON.stringify({
-                language:languageConfig.language,
-                version:languageConfig.version,
-                files:[
+            body: JSON.stringify({
+                language: languageConfig.language,
+                version: languageConfig.version,
+                files: [
                     {
-                        name:`main.${ getFileExtension(language)}`,
-                        content:code,
+                        name: `main.${getFileExtension(language)}`,
+                        content: code,
                     }
                 ]
             })
         })
-        if(!response.ok){
+
+        console.log("PISTON STATUS:", response.status)
+
+        if (!response.ok) {
+            const errorText = await response.text()
+            console.log("PISTON ERROR:", errorText)
+
             return {
-                success:false,
-                error:`HTTP error! status:${response.status}`
+                success: false,
+                error: `HTTP error! status: ${response.status}`
             }
         }
 
-        const data=await response.json()
+        const data = await response.json()
 
-        const output = data.run.output || ""
-        const stderr=data.run.stderr||""
+        console.log("PISTON RESPONSE:", data)
 
-        if(stderr){
-            return{
-                success:false,
-                output:output,
-                error:stderr
+        const output = data.run?.output || ""
+        const stderr = data.run?.stderr || ""
+
+        if (stderr) {
+            return {
+                success: false,
+                output: output,
+                error: stderr
             }
         }
 
         return {
-            success:true,
-            output:output|| "No output"
+            success: true,
+            output: output || "No output"
         }
-    }catch(error){
-        return{
-            success:false,
-            error:`Failed to execute code: ${error.message}`,
+
+    } catch (error) {
+        console.error("EXECUTION ERROR:", error)
+
+        return {
+            success: false,
+            error: `Failed to execute code: ${error.message}`
         }
     }
 }
 
-
-function getFileExtension(language){
-    const exctentions={
-        javascript:"js",
-        python:"py",
-        java:"java"
+function getFileExtension(language) {
+    const extensions = {
+        javascript: "js",
+        python: "py",
+        java: "java"
     };
-    return exctentions[language]||"txt";
+
+    return extensions[language] || "txt";
 }
