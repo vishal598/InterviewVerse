@@ -1,0 +1,5 @@
+lib is used to store all external apis or functionality
+
+1. db it for connective our appliction with mongodb atlas
+2. env is used to store all evn or scret keys so we have easily fetch it
+3. inngest is used to connect clerk (authenticate login) and databse and streamchat to have user record

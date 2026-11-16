@@ -1,0 +1,21 @@
+# Backend
+backend/.env
+backend/node_modules/
+
+# Frontend
+frontend/.env
+frontend/node_modules/
+
+/node_modules
+# Environment files
+.env
+.env.*
+!.env.example
+
+
+node_modules
+.env
+.env.*
+dist
+
+**/dist/
