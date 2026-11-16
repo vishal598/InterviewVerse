@@ -48,20 +48,24 @@ export async function getActiveSession(req,res){
     }
 }
 
-export async function getMyRecentSession(req,res){
-    try{
-        const userId=req.user._id;
-        const sessions= await Session.find({
-            status:"completed",
-            $or:[{host:userId},{participant:userId}]
-        }).sort({createdAt:-1})
-        .limit(20)
+export async function getMyRecentSession(req, res) {
+    try {
+        const userId = req.user._id;
+
+        const sessions = await Session.find({
+            status: "completed",
+            $or: [{ host: userId }, { participant: userId }]
+        })
+        .populate("host", "name profileImage email clerkId")
+        .populate("participant", "name profileImage email clerkId")
+        .sort({ updatedAt: -1 })
+        .limit(20);
 
         res.status(200).json({ sessions });
-    }catch(error){
-        console.log("error in getMYssesiion",error.message)
-        res.status(500).json({message:"internel error"})
-        
+
+    } catch (error) {
+        console.log("error in getMyRecentSession", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
