@@ -1,6 +1,6 @@
 import React from 'react';
 import Editor from "@monaco-editor/react"
-import {LANGUAGE_CONFIG} from "../data/problems.JS"
+import {LANGUAGE_CONFIG} from "../data/problems.js"
 import { ArrowPathIcon, PlayIcon } from '@heroicons/react/24/solid';
 function CodeEditor({  
     selectedLanguage,
