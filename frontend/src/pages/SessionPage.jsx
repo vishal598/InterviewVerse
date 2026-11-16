@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { useEndSession, useJoinSession, useSessionById ,useLeaveSession} from "../hooks/useSessions";
 import { PROBLEMS } from "../data/problems";
 import { executeCode } from "../lib/piston";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/NavBar";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import  gDB  from "../lib/util";
 
